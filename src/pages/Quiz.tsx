@@ -16,6 +16,7 @@ export default function Quiz() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [quizFinished, setQuizFinished] = useState(false);
   const [bgColor, setBgColor] = useState<{ [key: string]: string }>({});
+  const [disabledOptions, setDisabledOptions] = useState<boolean>(false);
 
   useEffect(() => {
     setShuffledQuestions(shuffleArray([...questions]));
@@ -23,6 +24,9 @@ export default function Quiz() {
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
+
+    if (disabledOptions) return;
+    setDisabledOptions(true);
 
     if (option === shuffledQuestions[currentQuestionIndex].answer) {
       setBgColor({ [option]: "bg-green-500 text-white" });
@@ -38,6 +42,7 @@ export default function Quiz() {
       setCurrentQuestionIndex((prev) => prev + 1);
       setSelectedOption(null);
       setBgColor({});
+      setDisabledOptions(false);
     } else {
       setTimeout(() => {
         setQuizFinished(true);
@@ -59,6 +64,7 @@ export default function Quiz() {
               selectedOption={selectedOption}
               onSelect={handleSelect}
               bgColor={bgColor} // Add border color for correct and wrong answers
+              disabledOptions={disabledOptions} // Add disabled state for options when the user selects an answer
             />
             <button
               onClick={handleNext}
